@@ -22,7 +22,8 @@ class Jetty${version}Runner extends Runner {
 			config, 
 			new PlusConfiguration, 
 			new JettyWebXmlConfiguration, 
-			new TagLibConfiguration)
+			new TagLibConfiguration
+			${configurations})
 		context.setConfigurations(array)
 	}
 	private def deploy(contextPath: String, deployment: Deployment) = {

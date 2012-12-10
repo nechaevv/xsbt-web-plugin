@@ -32,17 +32,19 @@ object PluginBuild extends Build {
 				"envConfig.init" -> """
 				setWebAppContext(context)
 				configureWebApp()
-				"""
+				""",
+				"configurations" -> ""
 			),
 			Map(
-				"version" -> "7",
+				"version" -> "8",
 				"sslConnectorClass" -> "SslSelectChannelConnector",
 				"imports" -> """
 				import org.eclipse.jetty.server.{Server, Handler}
 				import org.eclipse.jetty.server.handler.ContextHandlerCollection
 				import org.eclipse.jetty.server.nio.SelectChannelConnector
-				import org.eclipse.jetty.server.ssl.SslSelectChannelConnector                
+				import org.eclipse.jetty.server.ssl.SslSelectChannelConnector
 				import org.eclipse.jetty.webapp.{WebAppClassLoader, WebAppContext, WebInfConfiguration, Configuration, FragmentConfiguration, JettyWebXmlConfiguration, TagLibConfiguration, WebXmlConfiguration}
+				import org.eclipse.jetty.annotations.AnnotationConfiguration
 				import org.eclipse.jetty.util.{Scanner => JScanner}
 				import org.eclipse.jetty.util.log.{Log, Logger => JLogger}
 				import org.eclipse.jetty.util.resource.ResourceCollection
@@ -52,7 +54,8 @@ object PluginBuild extends Build {
 				"filesChanged.type" -> "String",
 				"envConfig.init" -> """
 				configure(context)
-				"""
+				""",
+				"configurations" -> ", new AnnotationConfiguration"
 			))
 		val root = target / "templates"
 		data.zipWithIndex.flatMap {
@@ -99,12 +102,14 @@ object PluginBuild extends Build {
 	def rootSettings: Seq[Setting[_]] = sharedSettings ++ scriptedSettings ++ Seq(
 		sbtPlugin := true,
 		name := "xsbt-web-plugin",
-		version := "0.2.11.1",
+		version := "0.2.11.1-SNAPSHOT",
 		libraryDependencies ++= Seq(
-			"org.mortbay.jetty" % "jetty" % "6.1.22" % "optional",
-			"org.mortbay.jetty" % "jetty-plus" % "6.1.22" % "optional",
-			"org.eclipse.jetty" % "jetty-webapp" % "7.5.1.v20110908" % "optional",
-			"org.eclipse.jetty" % "jetty-plus" % "7.5.1.v20110908" % "optional"
+		  "javax.servlet" % "javax.servlet-api" % "3.0.1",
+		  "org.mortbay.jetty" % "jetty" % "6.1.22" % "optional",
+		  "org.mortbay.jetty" % "jetty-plus" % "6.1.22" % "optional",
+		  "org.eclipse.jetty" % "jetty-webapp" % "8.1.7.v20120910" % "optional" excludeAll(ExclusionRule(organization="org.eclipse.jetty.orbit")),
+		  "org.eclipse.jetty" % "jetty-plus" % "8.1.7.v20120910" % "optional" excludeAll(ExclusionRule(organization="org.eclipse.jetty.orbit")),
+		  "org.eclipse.jetty" % "jetty-annotations" % "8.1.7.v20120910" % "optional" excludeAll(ExclusionRule(organization="org.eclipse.jetty.orbit"))
 		),
 		templatesDirectory <<= (sourceDirectory in Runtime)(_ / "templates"),
 		generateJettyRunners <<= (templatesDirectory, target) map {
@@ -119,7 +124,7 @@ object PluginBuild extends Build {
 
 	def commonsSettings = sharedSettings ++ Seq(
 		name := "plugin-commons",
-		version := "0.1.1",
+		version := "0.1.1-SNAPSHOT",
 		libraryDependencies <++= (sbtVersion) {
 			(v) => Seq(
 				"org.scala-sbt" % "classpath" % v % "provided"

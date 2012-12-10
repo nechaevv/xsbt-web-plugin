@@ -10,7 +10,7 @@ import scala.xml.NodeSeq
 object Runner {
 	def runners = Seq(
 		classOf[Jetty6Runner].getName,
-		classOf[Jetty7Runner].getName
+		classOf[Jetty8Runner].getName
 	)
 	def packages = Seq("org.mortbay", "org.eclipse.jetty")
 	def apply(instance: ScalaInstance, classpath: Seq[File]): Runner = {
@@ -29,13 +29,17 @@ object Runner {
 		case Seq(runner, rest@_*) =>
 			try { loadRunner(runner, loader)	}
 			catch {
-				case e: InvocationTargetException =>
+				case e: InvocationTargetException => {
+				  e.printStackTrace();
 					e.getCause match {
 						case _: NoClassDefFoundError =>
 							guessRunner(loader, rest)
 					}
-				case e: NoClassDefFoundError =>
+				}
+				case e: NoClassDefFoundError => {
+				  e.printStackTrace();
 					guessRunner(loader, rest)
+				}
 			}			
 	}
 }
