@@ -30,14 +30,14 @@ object Runner {
 			try { loadRunner(runner, loader)	}
 			catch {
 				case e: InvocationTargetException => {
-				  e.printStackTrace();
+				  //e.printStackTrace();
 					e.getCause match {
 						case _: NoClassDefFoundError =>
 							guessRunner(loader, rest)
 					}
 				}
 				case e: NoClassDefFoundError => {
-				  e.printStackTrace();
+				  //e.printStackTrace();
 					guessRunner(loader, rest)
 				}
 			}			

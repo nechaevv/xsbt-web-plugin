@@ -18,12 +18,12 @@ class Jetty${version}Runner extends Runner {
 		val config = new EnvConfiguration { setJettyEnvXml(file.toURI.toURL) }
 		val array : Array[Configuration] = Array(
 			new WebInfConfiguration, 
-			new WebXmlConfiguration,  
+			new WebXmlConfiguration,
+			${configurations}
 			config, 
 			new PlusConfiguration, 
 			new JettyWebXmlConfiguration, 
-			new TagLibConfiguration
-			${configurations})
+			new TagLibConfiguration)
 		context.setConfigurations(array)
 	}
 	private def deploy(contextPath: String, deployment: Deployment) = {
@@ -70,7 +70,9 @@ class Jetty${version}Runner extends Runner {
 		if(server != null)
 			return
 		try { 
-			Log.setLog(new DelegatingLogger(logger))
+			val jettyLogger = new DelegatingLogger(logger)
+			jettyLogger.setDebugEnabled(true)
+			Log.setLog(jettyLogger)
 			server = new Server
 			if(customConf)
 				configureCustom(confFiles, confXml)

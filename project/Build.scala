@@ -55,7 +55,7 @@ object PluginBuild extends Build {
 				"envConfig.init" -> """
 				configure(context)
 				""",
-				"configurations" -> ", new AnnotationConfiguration"
+				"configurations" -> "new AnnotationConfiguration,"
 			))
 		val root = target / "templates"
 		data.zipWithIndex.flatMap {
