@@ -1,0 +1,9 @@
+target
+.*
+!.gitignore
+nbactions.xml
+*.iml
+*.ipr
+*.iws
+#*
+*~
