@@ -44,7 +44,6 @@ object PluginBuild extends Build {
 				import org.eclipse.jetty.server.nio.SelectChannelConnector
 				import org.eclipse.jetty.server.ssl.SslSelectChannelConnector
 				import org.eclipse.jetty.webapp.{WebAppClassLoader, WebAppContext, WebInfConfiguration, Configuration, FragmentConfiguration, JettyWebXmlConfiguration, TagLibConfiguration, WebXmlConfiguration}
-				import org.eclipse.jetty.annotations.AnnotationConfiguration
 				import org.eclipse.jetty.util.{Scanner => JScanner}
 				import org.eclipse.jetty.util.log.{Log, Logger => JLogger}
 				import org.eclipse.jetty.util.resource.ResourceCollection
@@ -55,7 +54,7 @@ object PluginBuild extends Build {
 				"envConfig.init" -> """
 				configure(context)
 				""",
-				"configurations" -> "new AnnotationConfiguration,"
+				"configurations" -> "new XsbtAnnotationConfiguration(classpath),"
 			))
 		val root = target / "templates"
 		data.zipWithIndex.flatMap {
@@ -107,9 +106,9 @@ object PluginBuild extends Build {
 		  "javax.servlet" % "javax.servlet-api" % "3.0.1",
 		  "org.mortbay.jetty" % "jetty" % "6.1.22" % "optional",
 		  "org.mortbay.jetty" % "jetty-plus" % "6.1.22" % "optional",
-		  "org.eclipse.jetty" % "jetty-webapp" % "8.1.7.v20120910" % "optional" excludeAll(ExclusionRule(organization="org.eclipse.jetty.orbit")),
-		  "org.eclipse.jetty" % "jetty-plus" % "8.1.7.v20120910" % "optional" excludeAll(ExclusionRule(organization="org.eclipse.jetty.orbit")),
-		  "org.eclipse.jetty" % "jetty-annotations" % "8.1.7.v20120910" % "optional" excludeAll(ExclusionRule(organization="org.eclipse.jetty.orbit"))
+		  "org.eclipse.jetty" % "jetty-webapp" % "8.1.8.v20121106" % "optional" excludeAll(ExclusionRule(organization="org.eclipse.jetty.orbit")),
+		  "org.eclipse.jetty" % "jetty-plus" % "8.1.8.v20121106" % "optional" excludeAll(ExclusionRule(organization="org.eclipse.jetty.orbit")),
+		  "org.eclipse.jetty" % "jetty-annotations" % "8.1.8.v20121106" % "optional" excludeAll(ExclusionRule(organization="org.eclipse.jetty.orbit"))
 		),
 		templatesDirectory <<= (sourceDirectory in Runtime)(_ / "templates"),
 		generateJettyRunners <<= (templatesDirectory, target) map {

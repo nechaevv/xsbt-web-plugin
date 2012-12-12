@@ -14,7 +14,7 @@ class Jetty${version}Runner extends Runner {
 		val appLoader = toLoader(classpath, loader)
 		context.setClassLoader(appLoader)
 	}
-	private def setEnvConfiguration(context: WebAppContext, file: File) {
+	private def setEnvConfiguration(context: WebAppContext, file: File, classpath: Seq[File]) {
 		val config = new EnvConfiguration { setJettyEnvXml(file.toURI.toURL) }
 		val array : Array[Configuration] = Array(
 			new WebInfConfiguration, 
@@ -35,7 +35,7 @@ class Jetty${version}Runner extends Runner {
 				webappResources.map(_.getPath).toArray
 			))
 		setContextLoader(context, classpath)
-		env.foreach(setEnvConfiguration(context, _))
+		env.foreach(setEnvConfiguration(context, _, classpath))
 		if(!scanDirectories.isEmpty)
 			new Scanner(scanDirectories, scanInterval, () => reload(contextPath))
 		contexts += contextPath -> (context, deployment)
