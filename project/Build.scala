@@ -44,6 +44,7 @@ object PluginBuild extends Build {
 				import org.eclipse.jetty.server.nio.SelectChannelConnector
 				import org.eclipse.jetty.server.ssl.SslSelectChannelConnector
 				import org.eclipse.jetty.webapp.{WebAppClassLoader, WebAppContext, WebInfConfiguration, Configuration, FragmentConfiguration, JettyWebXmlConfiguration, TagLibConfiguration, WebXmlConfiguration}
+				import org.eclipse.jetty.xsbt.XsbtAnnotationConfiguration
 				import org.eclipse.jetty.util.{Scanner => JScanner}
 				import org.eclipse.jetty.util.log.{Log, Logger => JLogger}
 				import org.eclipse.jetty.util.resource.ResourceCollection
@@ -108,7 +109,8 @@ object PluginBuild extends Build {
 		  "org.mortbay.jetty" % "jetty-plus" % "6.1.22" % "optional",
 		  "org.eclipse.jetty" % "jetty-webapp" % "8.1.8.v20121106" % "optional" excludeAll(ExclusionRule(organization="org.eclipse.jetty.orbit")),
 		  "org.eclipse.jetty" % "jetty-plus" % "8.1.8.v20121106" % "optional" excludeAll(ExclusionRule(organization="org.eclipse.jetty.orbit")),
-		  "org.eclipse.jetty" % "jetty-annotations" % "8.1.8.v20121106" % "optional" excludeAll(ExclusionRule(organization="org.eclipse.jetty.orbit"))
+		  "org.eclipse.jetty" % "jetty-annotations" % "8.1.8.v20121106" % "optional" excludeAll(ExclusionRule(organization="org.eclipse.jetty.orbit")),
+		  "org.eclipse.jetty.xsbt" %% "jetty-xsbt" % "8.1.8.v20121106" % "optional" excludeAll(ExclusionRule(organization="org.eclipse.jetty.orbit"))
 		),
 		templatesDirectory <<= (sourceDirectory in Runtime)(_ / "templates"),
 		generateJettyRunners <<= (templatesDirectory, target) map {

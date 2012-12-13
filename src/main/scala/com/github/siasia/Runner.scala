@@ -9,10 +9,10 @@ import scala.xml.NodeSeq
 
 object Runner {
 	def runners = Seq(
-		//classOf[Jetty6Runner].getName,
+		classOf[Jetty6Runner].getName,
 		classOf[Jetty8Runner].getName
 	)
-	def packages = Seq("org.mortbay", "org.eclipse.jetty", "org.eclipse.jetty.annotations")
+	def packages = Seq("org.mortbay", "org.eclipse.jetty")
 	def apply(instance: ScalaInstance, classpath: Seq[File]): Runner = {
 		val parentLoader = instance.loader
 		val loader: ClassLoader = toLoader(classpath, parentLoader)
@@ -21,8 +21,7 @@ object Runner {
 		runner.setLoader(loader)
 		runner
 	}
-	def loadRunner(className: String, loader: ClassLoader):Runner = loader.loadClass(className).newInstance().asInstanceOf[Runner]
-		//LazyLoader.makeInstance[Runner](loader, packages, className)
+	def loadRunner(className: String, loader: ClassLoader):Runner = LazyLoader.makeInstance[Runner](loader, packages, className)
 		
 	def guessRunner(loader: ClassLoader, rs: Seq[String]): Runner = rs match {
 		case Seq() => sys.error("Jetty dependencies should be on container classpath")
