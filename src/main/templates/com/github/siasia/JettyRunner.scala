@@ -9,6 +9,7 @@ import scala.xml.NodeSeq
 class Jetty${version}Runner extends Runner {
 	private[this] val forceJettyLoad = classOf[Server]
 	private var server: Server = null
+	private var scanners: List[Scanner] = Nil
 	private var contexts: Map[String, (WebAppContext, Deployment)] = Map()
 	private def setContextLoader(context: WebAppContext, classpath: Seq[File]) {
 		val appLoader = toLoader(classpath, loader)
@@ -36,8 +37,7 @@ class Jetty${version}Runner extends Runner {
 			))
 		setContextLoader(context, classpath)
 		env.foreach(setEnvConfiguration(context, _, classpath))
-		if(!scanDirectories.isEmpty)
-			new Scanner(scanDirectories, scanInterval, () => reload(contextPath))
+		if(!scanDirectories.isEmpty) scanners = new Scanner(scanDirectories, scanInterval, () => reload(contextPath)) :: scanners
 		contexts += contextPath -> (context, deployment)
 		context
 	}	
@@ -98,9 +98,10 @@ class Jetty${version}Runner extends Runner {
 		context.start()
 	}
 	def stop() {
-		if(server != null)
-			server.stop()
+		if(server != null) server.stop()
 		server = null
+		scanners.foreach(_.stop)
+		scanners = Nil
 	}
 	class DelegatingLogger(delegate: AbstractLogger) extends LoggerBase(delegate) with JLogger {
 		def getLogger(name: String) = this
