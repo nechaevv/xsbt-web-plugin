@@ -4,7 +4,7 @@ import sbt.{`package` => _, _}
 import Project.Initialize
 import Keys._
 import PluginKeys._
-import _root_.sbt.Defaults.{packageTasks, packageBinTask, inDependencies}
+import _root_.sbt.Defaults.{packageTaskSettings, packageBinTask, inDependencies}
 import _root_.sbt.Classpaths.analyzed
 
 object WarPlugin extends Plugin {
@@ -27,12 +27,12 @@ object WarPlugin extends Plugin {
 			val (libs, directories) = classpath.toList.partition(ClasspathUtilities.isArchive)
 			val wcToCopy = for {
 				dir <- webappResources
-				file <- dir.descendentsExcept("*", filter).get
+				file <- dir.descendantsExcept("*", filter).get
 				val target = Path.rebase(dir, warPath)(file).get
 			} yield (file, target)
 			val classesAndResources = for {
 				dir <- directories
-				file <- dir.descendentsExcept("*", filter).get
+				file <- dir.descendantsExcept("*", filter).get
 				val target = Path.rebase(dir, classesTargetDirectory)(file).get
 			} yield (file, target)
 			if(log.atLevel(Level.Debug))
@@ -51,10 +51,10 @@ object WarPlugin extends Plugin {
 			IO.delete(files)
 			IO.deleteIfEmpty(dirs.toSet)
 			postProcess()
-			(warPath).descendentsExcept("*", filter) x (relativeTo(warPath)|flat)
+			(warPath).descendantsExcept("*", filter) x (relativeTo(warPath)|flat)
 		}
 	def warSettings0(classpathConfig: Configuration):Seq[Setting[_]] =
-		packageTasks(packageWar, packageWarTask(classpathConfig)) ++ Seq(
+		packageTaskSettings(packageWar, packageWarTask(classpathConfig)) ++ Seq(
 			webappResources <<= sourceDirectory(sd => Seq(sd / "webapp")),
 			webappResources <++= inDependencies(webappResources, ref => Nil, false) apply { _.flatten },
 			artifact in packageWar <<= moduleName(n => Artifact(n, "war", "war")),
